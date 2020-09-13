@@ -1,0 +1,132 @@
+This is CSE241 Spring 2019 project by Yanqi Liu.
+
+
+Note on ER Diagram: 
+	I made a small modification after the ER design and relaitonal schema were due. The modification was that I deleted
+	the three attributes in "Ship_Spec" relationship set, because they are already reflected in
+	"Ship_Gen" relationship set. 
+
+
+Building:
+    Makefile is included, run
+        $ make
+    to build the project.
+
+
+Executing:
+    Run
+        $ java -jar yal220.jar
+
+
+Data sources:
+    - Most Data generated on https://www.mockaroo.com/
+    - A small portion of data added manually
+
+
+Interfaces:
+	Connection Interface:
+		Designed for: Every type of users
+		Description: 
+			This interface handles the connection part of the project. User is asked to provide
+			username and password. User would be asked for credentials until 1) he/she enters the 
+			correct credentials; 2) he/she force quit with ctrl-c. Then user is asked to identify 
+			him/herself among Store Manager and Supplier. Next, either Store Manager or Supplier 
+			interface is launched. 
+			
+
+    Store Manager Interface:
+        Designed for: Regork Supermarket Store Managers 
+        Description:
+			This interface provides store managers five main functionalities that they can do. User 
+			is first presented with a menu of this five options. 
+		Sub-interfaces:
+			(1) check Regork products & make an order:
+				Once user chooses this interface, he/she will be presented with a list of products that
+				Regork is selling. Then the user has the option to make a new order from a supplier of
+				his/her choosing for a product either that Regork has been selling or that it has never 
+				sold before. 
+
+			(2) find the best supplier for a product:
+				Once user chooses this interface, he/she will be asked for a product that he/she is looking
+				for potential suppliers. Then a list of suppliers that offer this product is provided in 
+				ranked order based on prices.
+
+			(3) contact a supplier:
+				Once user chooses this interface, he/she can get a supplier's contact information including 
+				phone number and address via three different ways. The three ways are by supplier ID, by 
+				supplier name or just part of its name, and by a product that a supplier offers. 
+
+			(4) recall a product:
+				Once user chooses this interface, he/she is able to trace all the intermediate processes of a
+				particular product. These include all the components that made of this product and suppliers
+				for each component. Then these products/components are automatically removed from store shelves
+				along with the same products/components that are offered by any suppliers because of the 
+				potential danger. 
+			(5) confrim the receipt of an order:
+				Once user chooses this interface, he/she can check if there is any unconfirmed order. An unconfirmed
+				order refers to an order that a store manager made and that the corresponding supplier has 
+				shipped already but has not yet arrived at destination or arrived but not yet confirmed by
+				the buyer. If the user decides to confirm an order, the arrival time would automatically be 
+				set to the current date.
+
+    
+    Supplier Interface:
+        Designed for: Suppliers on record
+        Description:
+			This interface provides suppliers three main functionalities that they can do. After login and before
+			presenting the menu, user has to choose the company that he/she works for. All the following actions
+			can only happen within the company choosen and will not be interfered with other companies. 
+		Sub-interfaces:
+			(1) check new orders & make a shipment:
+				Once user chooses this interface, he/she can check if there is any new order. If there is at 
+				least one, user can choose to ship now or later. If user decides to ship now, the leaving time
+				would automatically be set to the current date. 
+			(2) update price/in-stock information for an existing product:
+				Once user chooses this interface, he/she can chooese a product to update for either price, or
+				quantity, or both. 
+			(3) add a new product:
+				Once user chooses this interface, he/she can add a new product that his/her company has not 
+				manufactured before. If the product is branded or does not have a record in the system, 
+				a new ID will be assigned. If the product has manufactured by some other companies, a shared
+				ID will be assigned. After the product is added to the system, user will be directed to sub-
+				interface (2) to make updates on price/quantity or not. 
+
+
+	Examples for testing:
+		Range for general product ID starts at 1000.
+		Range for specific product ID starts at 2000.
+		Range for supplier ID is between 2 and 100.
+		I have omit the examples for straightforward/simple functionalities and focus on some more complex ones.
+			Order & Shipment Handling:
+				I omit the examples for straightforward/simple functionalities and focus on some more complex ones. 
+				The Store Manager interface and Supplier interface are highly interactive in terms of order and shipment.
+				When a store manager makes an order, the supplier will get a "notification" under sub-interface(1). After
+				the supplier makes the shipment, the store manager will get a "notification" under sub-interface(5). 
+				* I have made four new orders as a store manager from suppilers whose ID are 15, 46, and 92. 
+				* I have shipped one of the new orders which shippment ID is 54 from supplier 15. 
+				* Graders can confirm the order with shipment ID 54 as a store manager. 
+				* Graders can ship the other three orders whose supplier ID are 15, 46, and 92 as a supplier.
+				* Graders are welcome to make any new orders as a store manager and play around between different roles.
+			Recall Handling:
+				A store manager recalls a product by giving its specific ID 2084. The components' specific IDs are 2025,
+				2074, 2061, 2004, and 2009. The first three components are also end products that appear on the store
+				shelves. So as a result of recalling 2084, the products with general ID 1002, 1023, 1038, and 1026 are
+				removed from store shelves as indicated by the attribute end_product_flag.
+			New Product Adding (case-sensitive):
+				As supplier 15, if it tries to add Almond Milk (non-branded), a shared ID 1000 will be assigned. If it 
+				tries to add Nike Shoes (branded), a new ID 1055 will be assigned. If if tries to add Egg (non-branded), 
+				transaction will be invalid and rollback.   
+
+    
+    In a real system. several more interfaces would be included. Some examples include:
+	(1) Interfaces for customers that make order from Regork both online and in-store. 
+	(2) Interfaces for both customers and Regork store managers that cancel unshipped online orders.
+	(3) Interfaces for both customers and Regork store managers that return an unsatisfied order. 
+	(4) Interfaces for both Regork store managers and suppliers that manage sales and discount.
+	(5) Interfaces for cashiers/cash registers that read barcodes.
+	(6) Interfaces for account management that identify the role of a user.
+	(7) Interfaces for Regork both store managers/suppliers that identify common sources for components of recalled products.
+	(8) Interfaces for both Regork store manager and suppliers that perform data analysis such as revenue report
+		using OLAP.
+	(9) Interfaces for Human Recources Department that maintain employees and salaries record. 
+	
